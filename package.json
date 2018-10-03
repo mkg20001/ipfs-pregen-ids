@@ -1,0 +1,36 @@
+{
+  "name": "ipfs-pregen-ids",
+  "version": "0.0.1",
+  "description": "Pregenerated peerIDs for IPFS",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ipfs",
+    "libp2p",
+    "peer-id",
+    "peer-ids",
+    "pregenerated"
+  ],
+  "author": "Maciej Krüger <mkg20001@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "src/**"
+  ],
+  "dependencies": {
+    "libp2p-crypto": "^0.14.0"
+  },
+  "devDependencies": {
+    "microjob": "^0.2.1",
+    "peer-id": "^0.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkg20001/ipfs-pregen-ids.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mkg20001/ipfs-pregen-ids/issues"
+  },
+  "homepage": "https://github.com/mkg20001/ipfs-pregen-ids#readme"
+}
