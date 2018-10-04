@@ -3,9 +3,26 @@
 
 const protobuf = require('protons')
 const pbm = protobuf(require('libp2p-crypto/src/keys/keys.proto'))
+const prepare = (d) => shuffle(d.split('"'))
+const prom = require('promisify-es6')
 
-const ids = shuffle(require('./ids.json').split('"')) // file can be generated using mkg20001/test-peer-ids.tk patched with ipfs://QmVZRWjZoqve9UKgng2gymN8a3FQUENgsQaicQ2fWs7kGx
+let pid
+try {
+  pid = require('peer-id') // optional
+} catch (e) {
+  // pass
+}
+
 const base = require('base-x')(' !#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~') // "compression" aka "whatever part of ascii can be put into a JSON string without needing to get escaped"-base
+
+const ids = {
+  16384: prepare(require('./ids.16384.json')),
+  8192: prepare(require('./ids.8192.json')),
+  4096: prepare(require('./ids.4096.json')),
+  2048: prepare(require('./ids.2048.json')),
+  1024: prepare(require('./ids.1024.json')),
+  512: prepare(require('./ids.512.json'))
+}
 
 /**
  * Shuffles array in place.
@@ -24,13 +41,36 @@ function shuffle (a) {
   return a
 }
 
-module.exports = () => {
-  if (!ids.length) { // TODO: should this maybe re-use ids?
+/**
+  * Gets pregenerated key
+  * @param {Number} size Keysize to get pregenerated key for default=2048
+  * @returns {String} base64 encoded private key
+  */
+module.exports = (size) => {
+  if (!size) {
+    size = 2048
+  }
+
+  if (!ids[size]) {
+    throw new Error('Keysize ' + size + ' invalid or unsupported!')
+  }
+
+  if (!ids[size].length) { // TODO: should this maybe re-use ids?
     throw new Error('Ran out of pregenerated IDs! What do you even need this many for?')
   }
 
-  return pbm.PublicKey.encode({ // this is needed because the keys aren't wrapped in the usual privateKey pbuf container to save space
+  const id = ids[size].pop()
+
+  return pbm.PrivateKey.encode({ // this is needed because the keys aren't wrapped in the usual privateKey pbuf container to save space
     Type: pbm.KeyType.RSA,
-    Data: base.decode(ids.pop())
-  }).toString('base64')
+    Data: base.decode(id)
+  })
 }
+
+module.exports.peerId = prom((size, cb) => {
+  if (!pid) {
+    throw new Error('ipfs-pregen-ids.peerId() requires "peer-id" to be installed')
+  }
+
+  pid.createFromPrivKey(module.exports(size), cb)
+})
