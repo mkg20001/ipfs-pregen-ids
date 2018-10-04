@@ -36,5 +36,8 @@
   "bugs": {
     "url": "https://github.com/mkg20001/ipfs-pregen-ids/issues"
   },
-  "homepage": "https://github.com/mkg20001/ipfs-pregen-ids#readme"
+  "homepage": "https://github.com/mkg20001/ipfs-pregen-ids#readme",
+  "contributors": [
+    "Maciej Krüger <mkg20001@gmail.com>"
+  ]
 }
